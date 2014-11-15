@@ -1,8 +1,8 @@
 package at.kalaunerwortha.dezsys06;
 
 /**
- *  Zustaendig fuer das Empfangen und Senden der Mails
- *  
+ * Zustaendig fuer das Empfangen und Senden der Mails
+ * 
  * @author Paul Kalauner 4AHIT
  * @version 20141115.1
  *

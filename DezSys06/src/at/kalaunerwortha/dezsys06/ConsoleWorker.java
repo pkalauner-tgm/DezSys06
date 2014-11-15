@@ -2,6 +2,7 @@ package at.kalaunerwortha.dezsys06;
 
 /**
  * Zustaendig fuer die Auswerung der Konsoleneingaben
+ * 
  * @author Paul Kalauner 4AHIT
  * @version 20141115.1
  *
