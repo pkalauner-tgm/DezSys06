@@ -34,26 +34,25 @@ public class JMSMailHandler {
 	 *            IP des Message Brokers
 	 * @param username
 	 *            Name mit dem Nachrichten gesendet werden
+	 * @return true wenn erfolgreich
 	 */
-	public void connect(String ip, String username) {
+	public boolean connect(String ip, String username) {
 
 		this.username = username;
-
-		// Create the connection.
 
 		try {
 			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(username, ActiveMQConnection.DEFAULT_PASSWORD, ip);
 			connection = connectionFactory.createConnection();
 			connection.start();
 
-			// Create the session
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			// queue = session.createQueue(username + "@" + ip);
 			queue = session.createQueue(username); // TODO
 			consumer = session.createConsumer(queue);
-
+			return true;
 		} catch (Exception e) {
 			System.out.println("Fehler beim Verbinden");
+			return false;
 		}
 	}
 

@@ -37,8 +37,9 @@ public class JMSChatHandler {
 	 *            Username mit dem der Benutzer chattet
 	 * @param chatroom
 	 *            Name des Chatrooms
+	 * @return true wenn erfolgreich
 	 */
-	public void connect(String ip, String username, String chatroom) {
+	public boolean connect(String ip, String username, String chatroom) {
 		this.username = username;
 		try {
 			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(username, ActiveMQConnection.DEFAULT_PASSWORD, ip);
@@ -53,9 +54,10 @@ public class JMSChatHandler {
 
 			rw = new ReceiveWorker(this);
 			new Thread(rw).start();
-
+			return true;
 		} catch (Exception e) {
 			System.out.println("Fehler beim Verbinden");
+			return false;
 		}
 	}
 

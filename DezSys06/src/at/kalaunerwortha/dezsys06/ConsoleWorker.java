@@ -34,9 +34,7 @@ public class ConsoleWorker {
 			if (args.length < 4) {
 				System.out.println("Ungültige Argumente:\nvsdbchat <ip_message_broker> <benutzername> <chatroom>");
 			} else {
-				jmsChat.connect(args[1], args[2], args[3]);
-				jmsMail.connect(args[1], args[2]);
-				loggedIn = true;
+				loggedIn = jmsChat.connect(args[1], args[2], args[3]) && jmsMail.connect(args[1], args[2]);
 			}
 		} else if (loggedIn) {
 			if (args[0].equals("MAIL")) {
@@ -49,7 +47,7 @@ public class ConsoleWorker {
 			} else
 				jmsChat.sendMessage(line);
 		} else
-			System.out.println("Bitte melden Sie sich zuerst mit folgendem Befehl an:\nvsdbchat <ip_message_broker> <benutzername> <chatroom>");
+			System.out.println("Bitte melden Sie sich zuerst mit folgendem Befehl an:\nvsdbchat <ip_message_broker> <benutzername> <chatroom>\n(Standardport: 61610)");
 	}
 
 	/**
