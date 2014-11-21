@@ -37,7 +37,7 @@ public class JMSChatHandler implements Closeable {
 	 * stellt Verbindung zum message broker her und erstellt das Topic
 	 * 
 	 * @param ip
-	 *            des Nessage Brokers
+	 *            des Message Brokers
 	 * @param username
 	 *            Username mit dem der Benutzer chattet
 	 * @param chatroom
