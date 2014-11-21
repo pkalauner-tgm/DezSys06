@@ -36,17 +36,22 @@ public class ConsoleWorker {
 		String[] args = line.split(" ");
 		if (args[0].equalsIgnoreCase("vsdbchat")) {
 			if (args.length < 4) {
-				System.out.println("Ungültige Argumente:\nvsdbchat <ip_message_broker> <benutzername> <chatroom>");
+				System.out
+						.println("Ungültige Argumente:\nvsdbchat <ip_message_broker> <benutzername> <chatroom>");
 			} else {
-				loggedIn = jmsChat.connect(args[1], args[2], args[3]) && jmsMail.connect(args[1], args[2]);
+				loggedIn = jmsChat.connect(args[1], args[2], args[3])
+						&& jmsMail.connect(args[1], args[2]);
 				if (loggedIn)
-					System.out.println("Willkommen im Chatroom " + args[3]
-							+ "!\nUm private Nachrichten zu senden, benutzen Sie bitte das MAIL Kommando:\nMAIL <Benutzername_des_Empfängers@IP_des_Empfängers> <nachricht>\nUm Ihre Nachrichten abzurufen, verwenden sie MAILBOX");
+					System.out
+							.println("Willkommen im Chatroom "
+									+ args[3]
+									+ "!\nUm private Nachrichten zu senden, benutzen Sie bitte das MAIL Kommando:\nMAIL <Benutzername_des_Empfängers@IP_des_Empfängers> <nachricht>\nUm Ihre Nachrichten abzurufen, verwenden sie MAILBOX");
 			}
 		} else if (loggedIn) {
 			if (args[0].equalsIgnoreCase("MAIL")) {
 				if (args.length < 3) {
-					System.out.println("Ungültige Argumente:\nMAIL <Benutzername@IP> <nachricht>");
+					System.out
+							.println("Ungültige Argumente:\nMAIL <Benutzername@IP> <nachricht>");
 				} else
 					jmsMail.sendMail(args[1], buildMessage(args, 2));
 			} else if (args[0].equalsIgnoreCase("MAILBOX")) {
@@ -54,7 +59,8 @@ public class ConsoleWorker {
 			} else
 				jmsChat.sendMessage(line);
 		} else
-			System.out.println("Bitte melden Sie sich zuerst mit folgendem Befehl an:\nvsdbchat <ip_message_broker> <benutzername> <chatroom>\n(Standardport: 61616)");
+			System.out
+					.println("Bitte melden Sie sich zuerst mit folgendem Befehl an:\nvsdbchat <ip_message_broker> <benutzername> <chatroom>\n(Standardport: 61616)");
 	}
 
 	/**
@@ -71,5 +77,13 @@ public class ConsoleWorker {
 		for (int i = startIndex; i < args.length; i++)
 			sb.append(" " + args[i]);
 		return sb.toString();
+	}
+
+	/**
+	 * Zum Testen
+	 * @return true if logged in
+	 */
+	boolean isLoggedIn() {
+		return this.loggedIn;
 	}
 }
