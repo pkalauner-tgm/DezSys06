@@ -34,7 +34,7 @@ public class ConsoleWorker {
 	 */
 	public void processLine(String line) {
 		String[] args = line.split(" ");
-		if (args[0].equals("vsdbchat")) {
+		if (args[0].equalsIgnoreCase("vsdbchat")) {
 			if (args.length < 4) {
 				System.out.println("Ungültige Argumente:\nvsdbchat <ip_message_broker> <benutzername> <chatroom>");
 			} else {
@@ -44,12 +44,12 @@ public class ConsoleWorker {
 							+ "!\nUm private Nachrichten zu senden, benutzen Sie bitte das MAIL Kommando:\nMAIL <Benutzername_des_Empfängers@IP_des_Empfängers> <nachricht>\nUm Ihre Nachrichten abzurufen, verwenden sie MAILBOX");
 			}
 		} else if (loggedIn) {
-			if (args[0].equals("MAIL")) {
+			if (args[0].equalsIgnoreCase("MAIL")) {
 				if (args.length < 3) {
 					System.out.println("Ungültige Argumente:\nMAIL <Benutzername@IP> <nachricht>");
 				} else
 					jmsMail.sendMail(args[1], buildMessage(args, 2));
-			} else if (args[0].equals("MAILBOX")) {
+			} else if (args[0].equalsIgnoreCase("MAILBOX")) {
 				jmsMail.receiveMail();
 			} else
 				jmsChat.sendMessage(line);

@@ -64,6 +64,7 @@ public class JMSMailHandler implements Closeable {
 	 * Alle Mails in der Mailbox abrufen
 	 */
 	public void receiveMail() {
+		System.out.println("Ihr Postfach:\n");
 		try {
 			while (true) {
 				// Timeout zwischen mehreren Messages setzen
