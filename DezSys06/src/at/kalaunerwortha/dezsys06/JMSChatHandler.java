@@ -1,5 +1,7 @@
 package at.kalaunerwortha.dezsys06;
 
+import java.io.Closeable;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
@@ -12,6 +14,8 @@ import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 /**
  * Zustaendig fuer das Senden der Chat-Nachrichten
@@ -20,7 +24,8 @@ import org.apache.activemq.ActiveMQConnectionFactory;
  * @version 20141115.1
  *
  */
-public class JMSChatHandler {
+public class JMSChatHandler implements Closeable{
+	private static final Logger LOG = LogManager.getLogger(JMSChatHandler.class);
 	private Session session;
 	private MessageProducer producer;
 	private Connection connection;
@@ -54,9 +59,10 @@ public class JMSChatHandler {
 
 			rw = new ReceiveWorker(this);
 			new Thread(rw).start();
+			sendMessage("hat den Chatraum betreten");
 			return true;
 		} catch (Exception e) {
-			System.out.println("Fehler beim Verbinden");
+			LOG.error("Fehler beim Verbinden");
 			return false;
 		}
 	}
@@ -70,25 +76,23 @@ public class JMSChatHandler {
 	public void sendMessage(String messageStr) {
 		TextMessage message;
 		try {
-			message = session.createTextMessage(username + " [xxx.xxx.xxx.xxx]: " + messageStr);
+			message = session.createTextMessage(username + "@" + IPHelper.getIP() + " " + messageStr);
 			producer.send(message);
 		} catch (JMSException e) {
-			e.printStackTrace();
-			System.out.println("Fehler beim Senden der Nachricht");
+			LOG.error("Fehler beim Senden der Nachricht");
 		}
 	}
 
-	/**
-	 * Sollte beim Abmelden des Benutzers
-	 */
 	public void close() {
 		try {
+			sendMessage("hat den Chatraum verlassen");
 			rw.setRunning(false);
 			consumer.close();
 			producer.close();
 			session.close();
 			connection.close();
 		} catch (JMSException e) {
+			LOG.error("Fehler beim Schliessen der Connection");
 		}
 
 	}

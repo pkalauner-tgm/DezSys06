@@ -11,12 +11,14 @@ public class ConsoleWorker {
 	private JMSChatHandler jmsChat;
 	private JMSMailHandler jmsMail;
 	private boolean loggedIn;
-	
+
 	/**
 	 * Initialisierung des ConsoleWorkers mit Angabe des Chat- und Mailhandlers
 	 * 
-	 * @param jmsChat der zu verwendende Chathandler
-	 * @param jmsMail der zu verwendende Mailhandler
+	 * @param jmsChat
+	 *            der zu verwendende Chathandler
+	 * @param jmsMail
+	 *            der zu verwendende Mailhandler
 	 */
 	public ConsoleWorker(JMSChatHandler jmsChat, JMSMailHandler jmsMail) {
 		this.jmsChat = jmsChat;
@@ -26,7 +28,9 @@ public class ConsoleWorker {
 
 	/**
 	 * Verarbeitung einer Konsoleneingabe
-	 * @param line die Konsoleneingabe
+	 * 
+	 * @param line
+	 *            die Konsoleneingabe
 	 */
 	public void processLine(String line) {
 		String[] args = line.split(" ");
@@ -35,11 +39,14 @@ public class ConsoleWorker {
 				System.out.println("Ungültige Argumente:\nvsdbchat <ip_message_broker> <benutzername> <chatroom>");
 			} else {
 				loggedIn = jmsChat.connect(args[1], args[2], args[3]) && jmsMail.connect(args[1], args[2]);
+				if (loggedIn)
+					System.out.println("Willkommen im Chatroom " + args[3]
+							+ "!\nUm private Nachrichten zu senden, benutzen Sie bitte das MAIL Kommando:\nMAIL <Benutzername_des_Empfängers@IP_des_Empfängers> <nachricht>\nUm Ihre Nachrichten abzurufen, verwenden sie MAILBOX");
 			}
 		} else if (loggedIn) {
 			if (args[0].equals("MAIL")) {
 				if (args.length < 3) {
-					System.out.println("Ungültige Argumente:\nMAIL <ip_des_benutzers> <nachricht>");
+					System.out.println("Ungültige Argumente:\nMAIL <Benutzername@IP> <nachricht>");
 				} else
 					jmsMail.sendMail(args[1], buildMessage(args, 2));
 			} else if (args[0].equals("MAILBOX")) {
@@ -47,7 +54,7 @@ public class ConsoleWorker {
 			} else
 				jmsChat.sendMessage(line);
 		} else
-			System.out.println("Bitte melden Sie sich zuerst mit folgendem Befehl an:\nvsdbchat <ip_message_broker> <benutzername> <chatroom>\n(Standardport: 61610)");
+			System.out.println("Bitte melden Sie sich zuerst mit folgendem Befehl an:\nvsdbchat <ip_message_broker> <benutzername> <chatroom>\n(Standardport: 61616)");
 	}
 
 	/**

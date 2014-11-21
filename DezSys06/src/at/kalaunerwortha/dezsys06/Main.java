@@ -18,14 +18,15 @@ public class Main {
 	 *            nicht verwendet
 	 */
 	public static void main(String[] args) {
-		JMSChatHandler jmsConnection = new JMSChatHandler();
+		JMSChatHandler jmsChat = new JMSChatHandler();
 		JMSMailHandler jmsMail = new JMSMailHandler();
-		ConsoleWorker cw = new ConsoleWorker(jmsConnection, jmsMail);
+		ConsoleWorker cw = new ConsoleWorker(jmsChat, jmsMail);
 		Scanner s = new Scanner(System.in);
 		while (true) {
 			String line = s.nextLine();
 			if (line.equalsIgnoreCase("EXIT")) {
-				jmsConnection.close();
+				jmsChat.close();
+				jmsMail.close();
 				s.close();
 				System.exit(0);
 			}

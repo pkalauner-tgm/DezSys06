@@ -3,6 +3,9 @@ package at.kalaunerwortha.dezsys06;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 /**
  * Zustaendig fuer das Empfangen der Nachrichten
  * 
@@ -11,6 +14,7 @@ import javax.jms.TextMessage;
  *
  */
 public class ReceiveWorker implements Runnable {
+	private static final Logger LOG = LogManager.getLogger(ReceiveWorker.class);
 	private JMSChatHandler jmsChat;
 	private boolean running;
 
@@ -36,7 +40,7 @@ public class ReceiveWorker implements Runnable {
 					message.acknowledge();
 				}
 			} catch (JMSException e) {
-				System.out.println("Fehler beim Empfangen der Nachricht");
+				LOG.error("Fehler beim Empfangen der Nachricht", e);
 			}
 		}
 	}

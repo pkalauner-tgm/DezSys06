@@ -1,5 +1,7 @@
 package at.kalaunerwortha.dezsys06;
 
+import java.io.Closeable;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -12,6 +14,8 @@ import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 /**
  * Zustaendig fuer das Empfangen und Senden der Mails
@@ -20,7 +24,8 @@ import org.apache.activemq.ActiveMQConnectionFactory;
  * @version 20141115.1
  *
  */
-public class JMSMailHandler {
+public class JMSMailHandler implements Closeable {
+	private static final Logger LOG = LogManager.getLogger(JMSMailHandler.class);
 	private Session session;
 	private Connection connection;
 	private String username;
@@ -46,12 +51,11 @@ public class JMSMailHandler {
 			connection.start();
 
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			// queue = session.createQueue(username + "@" + ip);
-			queue = session.createQueue(username); // TODO
+			queue = session.createQueue(username + "@" + IPHelper.getIP());
 			consumer = session.createConsumer(queue);
 			return true;
 		} catch (Exception e) {
-			System.out.println("Fehler beim Verbinden");
+			LOG.error("Fehler beim Verbinden");
 			return false;
 		}
 	}
@@ -73,42 +77,40 @@ public class JMSMailHandler {
 				System.out.println(tm.getText());
 			}
 		} catch (JMSException e) {
-			System.out.println("Fehler beim Empfangen der Nachrichten");
+			LOG.error("Fehler beim Empfangen der Nachrichten", e);
 		}
 	}
 
 	/**
 	 * Eine Mail an einen Benutzer senden
 	 * 
-	 * @param ip
-	 *            die IP des Benutzers
+	 * @param receiver
+	 *            Benutzername@IP
 	 * @param messageStr
 	 *            der Inhalt der Nachricht
 	 */
-	public void sendMail(String ip, String messageStr) {
+	public void sendMail(String receiver, String messageStr) {
 		Destination destination;
 		MessageProducer producer;
 		try {
-			destination = session.createQueue(ip);
+			destination = session.createQueue(receiver);
 			producer = session.createProducer(destination);
-			String msg = username + " [xxx.xxx.xxx.xxx]:" + messageStr;
+			String msg = username + "@" + IPHelper.getIP() + messageStr;
 			TextMessage message = session.createTextMessage(msg);
 			producer.send(message);
 			producer.close();
 		} catch (JMSException e) {
-			System.out.println("Fehler beim Senden der Mail.");
+			LOG.error("Fehler beim Senden der Mail.", e);
 		}
 	}
 
-	/**
-	 * Sollte beim Beenden aufgerufen werden
-	 */
 	public void close() {
 		try {
 			consumer.close();
 			session.close();
 			connection.close();
 		} catch (JMSException e) {
+			LOG.error("Fehler beim Schliessen der Connection", e);
 		}
 	}
 }
